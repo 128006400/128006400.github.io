@@ -1,24 +1,30 @@
+function startTest() {
+  const text = document.getElementById("text-display").innerText;
+  const input = document.getElementById("input-area").value;
+  const startTime = performance.now();
 
-const sampleText = "The quick brown fox jumps over the lazy dog.";
-const textDisplay = document.getElementById("text-display");
-const inputArea = document.getElementById("input-area");
-const result = document.getElementById("result");
+  setTimeout(() => {
+    const endTime = performance.now();
+    const durationInMinutes = (endTime - startTime) / 60000;
+    const wordCount = input.trim().split(/\s+/).length;
+    const wpm = Math.round(wordCount / durationInMinutes);
 
-function startTyping() {
-  textDisplay.textContent = sampleText;
-  inputArea.value = "";
-  inputArea.focus();
-  const startTime = new Date().getTime();
-
-  inputArea.oninput = () => {
-    const currentText = inputArea.value;
-    if (currentText === sampleText) {
-      const endTime = new Date().getTime();
-      const timeTaken = (endTime - startTime) / 1000; // in seconds
-      const words = sampleText.split(" ").length;
-      const speed = (words / timeTaken) * 60; // words per minute
-      result.innerHTML = `<p><strong>Typing Speed:</strong> ${speed.toFixed(2)} WPM</p><p><strong>Time Taken:</strong> ${timeTaken.toFixed(2)} seconds</p>`;
-      inputArea.oninput = null;
+    let correctChars = 0;
+    for (let i = 0; i < input.length; i++) {
+      if (input[i] === text[i]) {
+        correctChars++;
+      }
     }
-  };
+    const accuracy = Math.round((correctChars / text.length) * 100);
+
+    showResult(wpm, accuracy);
+  }, 1000); // Simulate a 1 second test
+}
+
+function showResult(wpm, accuracy) {
+  const resultDiv = document.getElementById("result");
+  resultDiv.innerHTML = `
+    <p><strong>Words per minute:</strong> ${wpm}</p>
+    <p><strong>Accuracy:</strong> ${accuracy}%</p>
+  `;
 }
