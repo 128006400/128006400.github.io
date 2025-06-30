@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NType Typing Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 {
+      color: #333;
+    }
+    .typing-box {
+      width: 60%;
+      margin: 20px auto;
+      padding: 20px;
+      border: 2px solid #ccc;
+      background-color: #fff;
+      font-size: 18px;
+    }
+    #textToType {
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+    textarea {
+      width: 100%;
+      height: 120px;
+      font-size: 16px;
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+    .results {
+      font-size: 18px;
+      color: green;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>NType Typing Test</h1>
+  <div class="typing-box">
+    <p id="textToType">The quick brown fox jumps over the lazy dog.</p>
+    <textarea id="inputArea" placeholder="Start typing here..."></textarea>
+    <div class="results">
+      <p>Time: <span id="timer">0</span> sec</p>
+      <p>WPM: <span id="wpm">0</span></p>
+      <p>Accuracy: <span id="accuracy">0</span>%</p>
+    </div>
+  </div>
+
+  <script>
+    const textToType = document.getElementById("textToType").innerText;
+    const inputArea = document.getElementById("inputArea");
+    const timerDisplay = document.getElementById("timer");
+    const wpmDisplay = document.getElementById("wpm");
+    const accuracyDisplay = document.getElementById("accuracy");
+
+    let startTime = null;
+    let interval = null;
+
+    function calculateResults() {
+      const typedText = inputArea.value;
+      const timeTaken = (new Date() - startTime) / 1000;
+      const minutes = timeTaken / 60;
+
+      let correctChars = 0;
+      for (let i = 0; i < typedText.length && i < textToType.length; i++) {
+        if (typedText[i] === textToType[i]) {
+          correctChars++;
+        }
+      }
+
+      const totalTypedChars = typedText.length;
+      const accuracy = totalTypedChars > 0 ? Math.round((correctChars / totalTypedChars) * 100) : 0;
+      accuracyDisplay.innerText = accuracy;
+
+      const wpm = minutes > 0 ? Math.round((correctChars / 5) / minutes) : 0;
+      wpmDisplay.innerText = wpm;
+    }
+
+    inputArea.addEventListener("focus", () => {
+      if (!startTime) {
+        startTime = new Date();
+        interval = setInterval(() => {
+          const timePassed = Math.floor((new Date() - startTime) / 1000);
+          timerDisplay.innerText = timePassed;
+          calculateResults();
+        }, 1000);
+      }
+    });
+
+    inputArea.addEventListener("blur", () => {
+      clearInterval(interval);
+    });
+  </script>
+</body>
+</html>
